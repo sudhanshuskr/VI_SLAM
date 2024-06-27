@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt; plt.ion()
+import matplotlib.pyplot as plt; #plt.ion()
 from mpl_toolkits.mplot3d import Axes3D
 import time
 
@@ -38,7 +38,7 @@ def mapCorrelation(im, x_im, y_im, vp, xs, ys):
       x1 = vp[0,:] + xs[jx] # 1 x 1076
       ix = np.int16(np.round((x1-xmin)/xresolution))
       valid = np.logical_and( np.logical_and((iy >=0), (iy < ny)), \
-			                        np.logical_and((ix >=0), (ix < nx)))
+                              np.logical_and((ix >=0), (ix < nx)))
       cpr[jx,jy] = np.sum(im[ix[valid],iy[valid]])
   return cpr
 
@@ -47,8 +47,8 @@ def bresenham2D(sx, sy, ex, ey):
   '''
   Bresenham's ray tracing algorithm in 2D.
   Inputs:
-	  (sx, sy)	start point of ray
-	  (ex, ey)	end point of ray
+    (sx, sy)	start point of ray
+    (ex, ey)	end point of ray
   '''
   sx = int(round(sx))
   sy = int(round(sy))
@@ -103,12 +103,13 @@ def test_bresenham2D():
   num_rep = 1000
   start_time = time.time()
   for i in range(0,num_rep):
-	  x,y = bresenham2D(sx, sy, 500, 200)
+    x,y = bresenham2D(sx, sy, 500, 200)
   print("1000 raytraces: --- %s seconds ---" % (time.time() - start_time))
+  
 
 def test_mapCorrelation():
   angles = np.arange(-135,135.25,0.25)*np.pi/180.0
-  ranges = np.load("test_ranges.npy")
+  ranges = np.load("code/test_ranges.npy")
 
   # take valid indices
   indValid = np.logical_and((ranges < 30),(ranges> 0.1))
@@ -141,6 +142,7 @@ def test_mapCorrelation():
   
   # build an arbitrary map 
   indGood = np.logical_and(np.logical_and(np.logical_and((xis > 1), (yis > 1)), (xis < MAP['sizex'])), (yis < MAP['sizey']))
+  print(indGood)
   MAP['map'][xis[indGood[0]],yis[indGood[0]]]=1
       
   x_im = np.arange(MAP['xmin'],MAP['xmax']+MAP['res'],MAP['res']) #x-positions of each pixel of the map
@@ -157,19 +159,19 @@ def test_mapCorrelation():
   toc(ts,"Map Correlation")
 
   c_ex = np.array([[3,4,8,162,270,132,18,1,0],
-		  [25  ,1   ,8   ,201  ,307 ,109 ,5  ,1   ,3],
-		  [314 ,198 ,91  ,263  ,366 ,73  ,5  ,6   ,6],
-		  [130 ,267 ,360 ,660  ,606 ,87  ,17 ,15  ,9],
-		  [17  ,28  ,95  ,618  ,668 ,370 ,271,136 ,30],
-		  [9   ,10  ,64  ,404  ,229 ,90  ,205,308 ,323],
-		  [5   ,16  ,101 ,360  ,152 ,5   ,1  ,24  ,102],
-		  [7   ,30  ,131 ,309  ,105 ,8   ,4  ,4   ,2],
-		  [16  ,55  ,138 ,274  ,75  ,11  ,6  ,6   ,3]])
+      [25  ,1   ,8   ,201  ,307 ,109 ,5  ,1   ,3],
+      [314 ,198 ,91  ,263  ,366 ,73  ,5  ,6   ,6],
+      [130 ,267 ,360 ,660  ,606 ,87  ,17 ,15  ,9],
+      [17  ,28  ,95  ,618  ,668 ,370 ,271,136 ,30],
+      [9   ,10  ,64  ,404  ,229 ,90  ,205,308 ,323],
+      [5   ,16  ,101 ,360  ,152 ,5   ,1  ,24  ,102],
+      [7   ,30  ,131 ,309  ,105 ,8   ,4  ,4   ,2],
+      [16  ,55  ,138 ,274  ,75  ,11  ,6  ,6   ,3]])
     
   if np.sum(c==c_ex) == np.size(c_ex):
-	  print("...Test passed.")
+    print("...Test passed.")
   else:
-	  print("...Test failed. Close figures to continue tests.")	
+    print("...Test failed. Close figures to continue tests.")	
 
   #plot original lidar points
   fig1 = plt.figure()
@@ -186,7 +188,7 @@ def test_mapCorrelation():
   
   #plot correlation
   fig3 = plt.figure()
-  ax3 = fig3.gca(projection='3d')
+  ax3 = fig3.add_subplot(projection='3d')
   X, Y = np.meshgrid(np.arange(0,9), np.arange(0,9))
   ax3.plot_surface(X,Y,c,linewidth=0,cmap=plt.cm.jet, antialiased=False,rstride=1, cstride=1)
   plt.title("Correlation coefficient map")  
@@ -195,7 +197,7 @@ def test_mapCorrelation():
   
 def show_lidar():
   angles = np.arange(-135,135.25,0.25)*np.pi/180.0
-  ranges = np.load("test_ranges.npy")
+  ranges = np.load("code/test_ranges.npy")
   plt.figure()
   ax = plt.subplot(111, projection='polar')
   ax.plot(angles, ranges)
@@ -205,10 +207,11 @@ def show_lidar():
   ax.grid(True)
   ax.set_title("Lidar scan data", va='bottom')
   plt.show()
-	
+  
 
 if __name__ == '__main__':
   show_lidar()
   test_mapCorrelation()
   test_bresenham2D()
+  
 
